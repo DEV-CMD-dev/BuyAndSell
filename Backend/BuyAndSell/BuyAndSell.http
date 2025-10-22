@@ -1,0 +1,6 @@
+@BuyAndSell_HostAddress = http://localhost:5087
+
+GET {{BuyAndSell_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
