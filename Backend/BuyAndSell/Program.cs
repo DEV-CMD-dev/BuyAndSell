@@ -1,4 +1,13 @@
+using DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+string connStr = builder.Configuration.GetConnectionString("RemoteDb")
+    ?? throw new Exception("No Connection String found.");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connStr));
 
 // Add services to the container.
 
