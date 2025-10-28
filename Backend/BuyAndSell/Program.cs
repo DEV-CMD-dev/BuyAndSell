@@ -1,4 +1,8 @@
+using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
 using DataAccess.Data;
+using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +14,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connStr));
 
 // Add services to the container.
+
+builder.Services.AddScoped<IAccountsService, AccountsService>();
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    options.SignIn.RequireConfirmedAccount = false)
+        .AddDefaultTokenProviders()
+        .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
