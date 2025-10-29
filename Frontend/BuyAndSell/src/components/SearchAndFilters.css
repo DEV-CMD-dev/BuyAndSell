@@ -1,0 +1,36 @@
+.search-form {
+    background: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    gap: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.input {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.search {
+    flex: 1;
+}
+
+.city {
+    width: 160px;
+}
+
+.search-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background: #222;
+}
