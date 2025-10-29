@@ -1,4 +1,5 @@
-﻿using BusinessLogic.Interfaces;
+﻿using BusinessLogic.DTOs;
+using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,12 @@ namespace BusinessLogic.Services
         {
             _ctx = ctx;
         }
+
         public async Task<List<Advertisement>> GetAll()
         {
             return await _ctx.Advertisements.ToListAsync();
         }
+
         public async Task<Advertisement> Get(int? id)
         {
             if (!id.HasValue || id <= 0)
@@ -34,17 +37,26 @@ namespace BusinessLogic.Services
 
             return ad;
         }
-        public async Task Create(Advertisement ad)
+
+        public async Task Create(AdvertisementsDTO dto)
         {
-            if(ad == null)
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            var ad = new Advertisement
             {
-                throw new ArgumentNullException(nameof(ad), "Не може бути null");
-            }
+                Title = dto.Title,
+                Description = dto.Description,
+                Price = dto.Price,
+                CategoryId = dto.CategoryId,
+                CreatedAt = DateTime.UtcNow
+            };
 
             _ctx.Advertisements.Add(ad);
-
             await _ctx.SaveChangesAsync();
         }
+
+
         public async Task Edit(int id, Advertisement updatedAd)
         {
             if (updatedAd == null)
@@ -66,6 +78,7 @@ namespace BusinessLogic.Services
             await _ctx.SaveChangesAsync();
 
         }
+
         public async Task Delete(int? id)
         {
             if (!id.HasValue || id <= 0)
