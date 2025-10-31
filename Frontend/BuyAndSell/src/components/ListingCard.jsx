@@ -4,6 +4,8 @@ import './ListingCard.css';
 
 
 export default function ListingCard({ item }) {
+    if (!item) return null;
+
     return (
         <Link to={`/listings/${item.id}`} className="listing-card">
             <img src={item.image} alt={item.title} className="listing-img" />
@@ -12,7 +14,7 @@ export default function ListingCard({ item }) {
                 <p className="listing-location">{item.location}</p>
                 <div className="listing-footer">
                     <span className="listing-price">{item.price}</span>
-                    <span className="listing-date">📅 2 дні тому</span>
+                    <span className="listing-date">📅 {item.createdAt.toLocaleDateString()}</span>
                 </div>
             </div>
         </Link>

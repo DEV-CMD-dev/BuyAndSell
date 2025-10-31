@@ -4,9 +4,30 @@ import './ListingPage.css';
 
 
 const MOCK_LISTINGS = [
-    { id: '1', title: 'Ноутбук Lenovo IdeaPad', price: '12 500₴', location: 'Київ', image: 'https://content2.rozetka.com.ua/goods/images/big/465898060.jpg' },
-    { id: '2', title: 'Велосипед CITY 28"', price: '3 200₴', location: 'Львів', image: 'https://content1.rozetka.com.ua/goods/images/big/430562622.jpg' },
-    { id: '3', title: 'Смартфон Galaxy A52', price: '6 800₴', location: 'Одеса', image: 'https://content.rozetka.com.ua/goods/images/big/523604275.jpg' }
+    {
+        id: '1',
+        title: 'Ноутбук Lenovo IdeaPad',
+        price: '12 500₴',
+        location: 'Київ',
+        image: 'https://content2.rozetka.com.ua/goods/images/big/465898060.jpg',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+    },
+    {
+        id: '2',
+        title: 'Велосипед CITY 28"',
+        price: '3 200₴',
+        location: 'Львів',
+        image: 'https://content1.rozetka.com.ua/goods/images/big/430562622.jpg',
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+    },
+    {
+        id: '3',
+        title: 'Смартфон Galaxy A52',
+        price: '6 800₴',
+        location: 'Одеса',
+        image: 'https://content.rozetka.com.ua/goods/images/big/523604275.jpg',
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+    }
 ];
 
 
