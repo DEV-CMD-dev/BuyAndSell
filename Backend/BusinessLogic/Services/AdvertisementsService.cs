@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Advertisements;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
@@ -38,7 +39,7 @@ namespace BusinessLogic.Services
             return ad;
         }
 
-        public async Task Create(AdvertisementsDTO dto)
+        public async Task Create(CreateAdvertisementDTO dto)
         {
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
@@ -49,7 +50,8 @@ namespace BusinessLogic.Services
                 Description = dto.Description,
                 Price = dto.Price,
                 CategoryId = dto.CategoryId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                UserId = dto.UserId
             };
 
             _ctx.Advertisements.Add(ad);
@@ -57,27 +59,20 @@ namespace BusinessLogic.Services
         }
 
 
-        public async Task Edit(int id, Advertisement updatedAd)
+        public async Task Edit(int id, EditAdvertisementDTO dto)
         {
-            if (updatedAd == null)
-                throw new ArgumentNullException(nameof(updatedAd));
-
             var existingAd = await _ctx.Advertisements.FindAsync(id);
             if (existingAd == null)
                 throw new KeyNotFoundException("Оголошення не знайдено");
 
-            existingAd.Title = updatedAd.Title;
-            existingAd.Description = updatedAd.Description;
-            existingAd.Price = updatedAd.Price;
-            existingAd.CreatedAt = updatedAd.CreatedAt;
-            existingAd.CategoryId = updatedAd.CategoryId;
-            existingAd.Category = updatedAd.Category;
-            existingAd.UserId = updatedAd.UserId;
-            existingAd.User = updatedAd.User;
+            existingAd.Title = dto.Title;
+            existingAd.Description = dto.Description;
+            existingAd.Price = dto.Price;
+            existingAd.CategoryId = dto.CategoryId;
 
             await _ctx.SaveChangesAsync();
-
         }
+
 
         public async Task Delete(int? id)
         {

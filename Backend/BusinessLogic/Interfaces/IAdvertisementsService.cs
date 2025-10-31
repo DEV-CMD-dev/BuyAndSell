@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Advertisements;
 using DataAccess.Data.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace BusinessLogic.Interfaces
     {
         Task<List<Advertisement>> GetAll();
         Task<Advertisement> Get(int? id);
-        Task Create(AdvertisementsDTO dto);
-        Task Edit(int id, Advertisement updatedAd);
+        Task Create(CreateAdvertisementDTO dto);
+        Task Edit(int id, EditAdvertisementDTO dto);
         Task Delete(int? id);
     }
 }

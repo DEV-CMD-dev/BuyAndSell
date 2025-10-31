@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Advertisements;
 using BusinessLogic.Interfaces;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +38,7 @@ namespace BuyAndSell.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AdvertisementsDTO dto)
+        public async Task<IActionResult> Create([FromBody] CreateAdvertisementDTO dto)
         {
             await advertisementsService.Create(dto);
             return Ok();
@@ -46,9 +47,9 @@ namespace BuyAndSell.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] Advertisement updatedAd)
+        public async Task<IActionResult> Edit(int id, [FromBody] EditAdvertisementDTO dto)
         {
-            await advertisementsService.Edit(id, updatedAd);
+            await advertisementsService.Edit(id, dto);
             return NoContent();
         }
 

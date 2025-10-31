@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.DTOs
 {
-    public class AdvertisementsDTO
+    public class AdvertisementDTO
     {
         public int Id { get; set; }
         public string Title { get; set; }
