@@ -8,8 +8,8 @@ namespace BusinessLogic.Interfaces
 {
     public interface IAdvertisementsService
     {
-        Task<List<Advertisement>> GetAll();
-        Task<Advertisement> Get(int? id);
+        Task<List<AdvertisementDTO>> GetAll();
+        Task<AdvertisementDTO> Get(int? id);
         Task Create(CreateAdvertisementDTO dto);
         Task Edit(int id, EditAdvertisementDTO dto);
         Task Delete(int? id);

@@ -21,23 +21,47 @@ namespace BusinessLogic.Services
             _ctx = ctx;
         }
 
-        public async Task<List<Advertisement>> GetAll()
+        public async Task<List<AdvertisementDTO>> GetAll()
         {
-            return await _ctx.Advertisements.ToListAsync();
+            return await _ctx.Advertisements
+                             .Select(ad => new AdvertisementDTO
+                             {
+                                 Id = ad.Id,
+                                 Title = ad.Title,
+                                 Description = ad.Description,
+                                 Price = ad.Price,
+                                 CreatedAt = ad.CreatedAt,
+                                 CategoryId = ad.CategoryId,
+                                 UserId = ad.UserId
+                             })
+                             .ToListAsync();
         }
 
-        public async Task<Advertisement> Get(int? id)
+        public async Task<AdvertisementDTO> Get(int? id)
         {
             if (!id.HasValue || id <= 0)
                 throw new ArgumentException("Id має бути більше нуля");
 
-            var ad = await _ctx.Advertisements.FindAsync(id.Value);
+            var ad = await _ctx.Advertisements
+                               .Where(a => a.Id == id.Value)
+                               .Select(a => new AdvertisementDTO
+                               {
+                                   Id = a.Id,
+                                   Title = a.Title,
+                                   Description = a.Description,
+                                   Price = a.Price,
+                                   CreatedAt = a.CreatedAt,
+                                   CategoryId = a.CategoryId,
+                                   UserId = a.UserId
+                               })
+                               .FirstOrDefaultAsync();
 
             if (ad == null)
-                throw new KeyNotFoundException("Оголошення не  знайдено");
+                throw new KeyNotFoundException("Оголошення не знайдено");
 
             return ad;
         }
+
 
         public async Task Create(CreateAdvertisementDTO dto)
         {
