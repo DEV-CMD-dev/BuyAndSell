@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connStr));
 
 // Add services to the container.
+builder.Services.AddScoped<IAdvertisementsService, AdvertisementsService>();
 
 builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
