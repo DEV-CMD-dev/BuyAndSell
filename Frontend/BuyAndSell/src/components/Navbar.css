@@ -35,10 +35,6 @@
     background: #f4f4f4;
 }
 
-.link {
-    color: #555;
-}
-
 .link:hover {
     text-decoration: underline;
 }

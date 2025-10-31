@@ -4,6 +4,12 @@
     padding: 0 20px;
 }
 
+.listing-not-found {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+
 .listing-image {
     width: 100%;
     border-radius: 8px;
