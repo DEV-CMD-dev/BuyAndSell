@@ -33,7 +33,7 @@ namespace BusinessLogic.Services
             var ad = await _ctx.Advertisements.FindAsync(id.Value);
 
             if (ad == null)
-                throw new KeyNotFoundException("Оголошення не знайдено");
+                throw new KeyNotFoundException("Оголошення не  знайдено");
 
             return ad;
         }
