@@ -19,9 +19,9 @@ namespace BuyAndSell.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int? categoryIdFilter, string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
         {
-            var ads = await advertisementsService.GetAll();
+            var ads = await advertisementsService.GetAll(categoryIdFilter, searchByTitle, searchByCity, minPrice, maxPrice);
             return Ok(ads);
         }
 

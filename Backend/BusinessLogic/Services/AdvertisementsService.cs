@@ -4,11 +4,7 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LinqKit;
 
 namespace BusinessLogic.Services
 {
@@ -21,20 +17,106 @@ namespace BusinessLogic.Services
             _ctx = ctx;
         }
 
-        public async Task<List<AdvertisementDTO>> GetAll()
+        public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter, string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
         {
-            return await _ctx.Advertisements
-                             .Select(ad => new AdvertisementDTO
-                             {
-                                 Id = ad.Id,
-                                 Title = ad.Title,
-                                 Description = ad.Description,
-                                 Price = ad.Price,
-                                 CreatedAt = ad.CreatedAt,
-                                 CategoryId = ad.CategoryId,
-                                 UserId = ad.UserId
-                             })
-                             .ToListAsync();
+            var globalMin = await _ctx.Advertisements.MinAsync(x => x.Price);
+            var globalMax = await _ctx.Advertisements.MaxAsync(x => x.Price);
+
+            if (minPrice.HasValue && minPrice.Value > globalMax)
+                return new List<AdvertisementDTO>();
+
+            if (maxPrice.HasValue && maxPrice.Value < globalMin)
+                return new List<AdvertisementDTO>();
+
+            if (minPrice.HasValue && maxPrice.HasValue && maxPrice < minPrice)
+                return new List<AdvertisementDTO>();
+
+            if (!string.IsNullOrWhiteSpace(searchByCity))
+            {
+                bool cityExists = await _ctx.Advertisements
+                    .AnyAsync(a => a.City.ToLower().Contains(searchByCity.ToLower()));
+
+                if (!cityExists)
+                    return new List<AdvertisementDTO>();
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchByTitle))
+            {
+                bool titleExists = await _ctx.Advertisements
+                    .AnyAsync(a => a.Title.ToLower().Contains(searchByTitle.ToLower()));
+
+                if (!titleExists)
+                    return new List<AdvertisementDTO>();
+            }
+
+            if (categoryIdFilter.HasValue)
+            {
+                bool categoryExists = await _ctx.Advertisements
+                    .AnyAsync(a => a.CategoryId == categoryIdFilter);
+
+                if (!categoryExists)
+                    return new List<AdvertisementDTO>();
+            }
+
+            var filterAd = PredicateBuilder.New<Advertisement>(true);
+
+            if (categoryIdFilter != null)
+            {
+                filterAd = filterAd.And(x => x.CategoryId == categoryIdFilter);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchByTitle))
+            {
+                filterAd = filterAd.And(x => x.Title.ToLower().Contains(searchByTitle.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchByCity))
+            {
+                filterAd = filterAd.And(x => x.City.ToLower().Contains(searchByCity.ToLower()));
+            }
+
+            if(minPrice.HasValue)
+            {
+                filterAd = filterAd.And(x => x.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                filterAd = filterAd.And(x => x.Price <= maxPrice.Value);
+            }
+
+            var query = _ctx.Advertisements.Where(filterAd);
+
+            var filtered = await query.ToListAsync();
+
+            if (filtered.Count == 0)
+            {
+                return await _ctx.Advertisements
+                    .Select(ad => new AdvertisementDTO
+                    {
+                        Id = ad.Id,
+                        Title = ad.Title,
+                        Description = ad.Description,
+                        Price = ad.Price,
+                        CreatedAt = ad.CreatedAt,
+                        CategoryId = ad.CategoryId,
+                        UserId = ad.UserId
+                    })
+                    .ToListAsync();
+            }
+
+            return filtered
+                .Select(ad => new AdvertisementDTO
+                {
+                    Id = ad.Id,
+                    Title = ad.Title,
+                    Description = ad.Description,
+                    Price = ad.Price,
+                    CreatedAt = ad.CreatedAt,
+                    CategoryId = ad.CategoryId,
+                    UserId = ad.UserId
+                })
+                .ToList();
         }
 
         public async Task<AdvertisementDTO> Get(int? id)
