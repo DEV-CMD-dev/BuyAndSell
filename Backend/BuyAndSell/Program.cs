@@ -1,3 +1,4 @@
+using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using DataAccess.Data;
@@ -15,11 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add services to the container.
 
-
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-    options.SignIn.RequireConfirmedAccount = false)
-        .AddDefaultTokenProviders()
-        .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("JwtOptions"));
 
 builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
