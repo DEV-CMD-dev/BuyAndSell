@@ -15,6 +15,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add services to the container.
 
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    options.SignIn.RequireConfirmedAccount = false)
+        .AddDefaultTokenProviders()
+        .AddEntityFrameworkStores<AppDbContext>();
+
 builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
