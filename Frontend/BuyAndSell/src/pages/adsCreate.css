@@ -1,0 +1,131 @@
+.ad-form-container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.ad-form-container h1 {
+  margin: 0 0 16px;
+}
+
+.ad-form-error {
+  background: #ffe8e8;
+  color: #a40000;
+  border: 1px solid #ffb4b4;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.ad-form {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ad-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ad-form-row.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.ad-form-row label {
+  font-weight: 600;
+}
+
+.ad-form input[type="text"],
+.ad-form input[type="number"],
+.ad-form select,
+.ad-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color .15s ease;
+  font: inherit;
+}
+
+.ad-form textarea { resize: vertical; }
+
+.ad-form input:focus,
+.ad-form select:focus,
+.ad-form textarea:focus {
+  border-color: #7aa7ff;
+}
+
+.images-grid {
+  margin: 6px 0 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.image-cell {
+  position: relative;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.image-cell img {
+  display: block;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.img-remove {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 12px;
+  color: #666;
+}
+
+.ad-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.ad-form-actions button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background: #f6f6f6;
+  cursor: pointer;
+}
+
+.ad-form-actions .primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+@media (max-width: 720px) {
+  .ad-form-row.grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

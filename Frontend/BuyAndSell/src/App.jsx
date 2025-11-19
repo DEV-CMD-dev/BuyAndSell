@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
-import ListingPage from './pages/AdvertisementPage';
+import AdvertisementPage from './pages/AdvertisementPage';
+import AdsCreate from './pages/adsCreate';
 import './index.css';
-
 
 export default function App() {
   return (
@@ -12,7 +12,10 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/listings/:id" element={<ListingPage />} />
+          <Route path="/listings/:id" element={<AdvertisementPage />} />
+          <Route path="/ads/:id" element={<AdvertisementPage />} />
+          <Route path="/ads/create" element={<AdsCreate />} />
+          <Route path="/ads/:id/edit" element={<AdsCreate />} />
           <Route
             path="*"
             element={
