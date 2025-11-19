@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import './ListingPage.css';
+import NotFound from './NotFound';
 
 
 const MOCK_LISTINGS = [
@@ -44,10 +45,7 @@ export default function ListingPage() {
 
     if (!listing) {
         return (
-            <div className="listing-not-found">
-                <h2>Оголошення не знайдено</h2>
-                <button onClick={() => navigate('/')}>Повернутись</button>
-            </div>
+            <NotFound />
         );
     }
 

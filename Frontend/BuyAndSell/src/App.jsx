@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import ListingPage from './pages/ListingPage';
 import './index.css';
+import NotFound from './pages/NotFound';
 
 
 export default function App() {
@@ -13,15 +14,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/listings/:id" element={<ListingPage />} />
-          <Route
-            path="*"
-            element={
-              <div className="page-not-found">
-                <h2>Сторінку не знайдено</h2>
-                <Link to="/" className="back-link">На головну</Link>
-              </div>
-            }
-          />
+          <Route path="*" element={<NotFound />}/>
         </Routes>
       </div>
     </BrowserRouter>
