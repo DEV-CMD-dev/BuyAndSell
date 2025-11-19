@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ListingPage.css';
 
@@ -6,7 +5,9 @@ import './ListingPage.css';
 const MOCK_LISTINGS = [
     {
         id: '1',
+        isNew: true,
         title: 'Ноутбук Lenovo IdeaPad',
+        description: "Cool laptop..",
         price: '12 500₴',
         location: 'Київ',
         image: 'https://content2.rozetka.com.ua/goods/images/big/465898060.jpg',
@@ -14,7 +15,9 @@ const MOCK_LISTINGS = [
     },
     {
         id: '2',
+        isNew: true,
         title: 'Велосипед CITY 28"',
+        description: "Nice bike..",
         price: '3 200₴',
         location: 'Львів',
         image: 'https://content1.rozetka.com.ua/goods/images/big/430562622.jpg',
@@ -22,7 +25,9 @@ const MOCK_LISTINGS = [
     },
     {
         id: '3',
+        isNew: true,
         title: 'Смартфон Galaxy A52',
+        description: "",
         price: '6 800₴',
         location: 'Одеса',
         image: 'https://content.rozetka.com.ua/goods/images/big/523604275.jpg',
@@ -55,6 +60,7 @@ export default function ListingPage() {
                 <p>{listing.location}</p>
                 <p className="price">{listing.price}</p>
                 <p>{listing.description}</p>
+                <p>Стан: {listing.isNew ? "Новий" : "Б/В"}</p>
             </div>
         </div>
     );
