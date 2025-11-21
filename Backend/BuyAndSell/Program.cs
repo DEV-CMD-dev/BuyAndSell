@@ -1,6 +1,7 @@
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
+using BusinessLogic.Configurations;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IAdvertisementsService, AdvertisementsService>();
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("JwtOptions"));
 
+builder.Services.AddAutoMapper(cfg => { }, typeof(MapperProfile));
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 

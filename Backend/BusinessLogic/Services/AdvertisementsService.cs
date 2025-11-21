@@ -4,17 +4,21 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using LinqKit;
+using AutoMapper;
 
-namespace BusinessLogic.Services
+namespace BusinessLogic.Services    
 {
     public class AdvertisementsService: IAdvertisementsService
     {
         private readonly AppDbContext _ctx;
+        private readonly IMapper mapper;
 
-        public AdvertisementsService(AppDbContext ctx)
+        public AdvertisementsService(AppDbContext ctx, IMapper mapper)
         {
             _ctx = ctx;
+
+            this.mapper = mapper;
+
         }
 
         public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter ,string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
@@ -48,42 +52,22 @@ namespace BusinessLogic.Services
 
             var filtered = await query.ToListAsync();
 
-            return filtered.Select(ad => new AdvertisementDTO
-            {
-                Id = ad.Id,
-                Title = ad.Title,
-                Description = ad.Description,
-                Price = ad.Price,
-                CreatedAt = ad.CreatedAt,
-                CategoryId = ad.CategoryId,
-                UserId = ad.UserId
-            }).ToList();
+            return (List<AdvertisementDTO>)mapper.Map<IList<AdvertisementDTO>>(filtered);
         }
 
 
         public async Task<AdvertisementDTO> Get(int? id)
         {
             if (!id.HasValue || id <= 0)
-                throw new ArgumentException("Id має бути більше нуля");
+                throw new ArgumentException("Id має бути більше нуля", nameof(id));
 
             var ad = await _ctx.Advertisements
-                               .Where(a => a.Id == id.Value)
-                               .Select(a => new AdvertisementDTO
-                               {
-                                   Id = a.Id,
-                                   Title = a.Title,
-                                   Description = a.Description,
-                                   Price = a.Price,
-                                   CreatedAt = a.CreatedAt,
-                                   CategoryId = a.CategoryId,
-                                   UserId = a.UserId
-                               })
-                               .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync(a => a.Id == id.Value);
 
             if (ad == null)
-                throw new KeyNotFoundException("Оголошення не знайдено");
+                throw new KeyNotFoundException($"Оголошення з Id {id.Value} не знайдено");
 
-            return ad;
+            return mapper.Map<AdvertisementDTO>(ad);
         }
 
 
@@ -92,15 +76,9 @@ namespace BusinessLogic.Services
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
 
-            var ad = new Advertisement
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                Price = dto.Price,
-                CategoryId = dto.CategoryId,
-                CreatedAt = DateTime.UtcNow,
-                UserId = dto.UserId
-            };
+            var ad = mapper.Map<Advertisement>(dto);
+
+            ad.CreatedAt = DateTime.UtcNow;
 
             _ctx.Advertisements.Add(ad);
             await _ctx.SaveChangesAsync();
@@ -110,13 +88,11 @@ namespace BusinessLogic.Services
         public async Task Edit(int id, EditAdvertisementDTO dto)
         {
             var existingAd = await _ctx.Advertisements.FindAsync(id);
+
             if (existingAd == null)
                 throw new KeyNotFoundException("Оголошення не знайдено");
 
-            existingAd.Title = dto.Title;
-            existingAd.Description = dto.Description;
-            existingAd.Price = dto.Price;
-            existingAd.CategoryId = dto.CategoryId;
+            mapper.Map(dto, existingAd);
 
             await _ctx.SaveChangesAsync();
         }
