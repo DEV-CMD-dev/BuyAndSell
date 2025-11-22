@@ -1,4 +1,5 @@
-﻿using DataAccess.Data.Entities;
+﻿using BusinessLogic.Interfaces;
+using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
-    public class AdminService
+    public class AdminService: IAdminService
     {
         private readonly UserManager<User> _userManager;
 
@@ -29,7 +30,7 @@ namespace BusinessLogic.Services
 
             return true;
         }
-        public async Task<bool> Unblocking(string id)
+        public async Task<bool> UnBlocking(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
@@ -42,16 +43,10 @@ namespace BusinessLogic.Services
 
             return true;
         }
-        public async Task GetProfile(string id)
+        public async Task<User?> GetProfile(string id)
         {
-            var profile = await _userManager.FindByIdAsync(id);
-            
-            if (profile == null)
-            {
-                return null;
-            }       
+            return await _userManager.FindByIdAsync(id);
         }
-
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,8 @@ namespace BusinessLogic.Interfaces
 {
     public interface IAdminService
     {
-        Task Blocking(string id);
-        Task UnBlocking(string id);
-        Task GerProfile(string id);
+        Task<bool> Blocking(string id);
+        Task<bool> UnBlocking(string id);
+        Task<User?> GetProfile(string id);
     }
 }
