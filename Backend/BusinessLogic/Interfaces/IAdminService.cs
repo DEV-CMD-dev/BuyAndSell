@@ -8,7 +8,8 @@ namespace BusinessLogic.Interfaces
 {
     public interface IAdminService
     {
-        Task Blocking(int id);
-        Task UnBlocking(int id);
+        Task Blocking(string id);
+        Task UnBlocking(string id);
+        Task GerProfile(string id);
     }
 }

@@ -11,6 +11,11 @@ namespace BusinessLogic.Services
     public class AdminService
     {
         private readonly UserManager<User> _userManager;
+
+        public AdminService(UserManager<User> userManager)
+        {
+            _userManager = userManager;
+        }
         public async Task<bool> Blocking(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -37,9 +42,14 @@ namespace BusinessLogic.Services
 
             return true;
         }
-        public async Task GetProfile(int id)
+        public async Task GetProfile(string id)
         {
-            var profile 
+            var profile = await _userManager.FindByIdAsync(id);
+            
+            if (profile == null)
+            {
+                return null;
+            }       
         }
 
 
