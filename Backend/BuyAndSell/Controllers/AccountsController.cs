@@ -26,9 +26,9 @@ namespace BuyAndSell.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            await accountsService.Login(model);
+            var res = await accountsService.Login(model);
 
-            return Ok();
+            return Ok(res);
         }
 
         [HttpPost("logout")]

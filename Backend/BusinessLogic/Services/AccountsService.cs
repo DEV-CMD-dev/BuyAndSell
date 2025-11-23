@@ -9,9 +9,11 @@ namespace BusinessLogic.Services
     {
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+        private readonly IJwtService jwtService;
 
-        public AccountsService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountsService(IJwtService jwtService, UserManager<User> userManager, SignInManager<User> signInManager)
         {
+            this.jwtService = jwtService;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
@@ -37,16 +39,22 @@ namespace BusinessLogic.Services
             }
         }
 
-        public async Task Login(LoginModel model)
+        public async Task<LoginResponse> Login(LoginModel model)
         {
-            var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+            var user = await userManager.FindByNameAsync(model.Username);
+            if (user == null)
+                throw new Exception("User not found");
 
+            var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
             if (!result.Succeeded)
-            {
                 throw new Exception("Invalid login attempt");
-            }
 
+            return new LoginResponse
+            {
+                AccessToken = await jwtService.GenerateTokenAsync(await jwtService.GetClaimsAsync(user))
+            };
         }
+
 
         public async Task Logout()
         {
