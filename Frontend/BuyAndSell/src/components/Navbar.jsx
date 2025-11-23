@@ -9,7 +9,7 @@ export default function Navbar() {
             <div className="navbar-container">
                 <Link to="/" className="logo">Buy&Sell</Link>
                 <div className="nav-links">
-                    <Link to="/listings/new" className="btn">Додати оголошення</Link>
+                    <Link to="/newListing" className="btn">Додати оголошення</Link>
                     <Link to="/favorites" className="btn">Улюблені</Link>
                 </div>
             </div>

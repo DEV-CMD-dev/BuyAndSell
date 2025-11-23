@@ -1,66 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchAndFilters from '../components/SearchAndFilters';
 import ListingCard from '../components/ListingCard';
 import './HomePage.css';
-
-
-const MOCK_LISTINGS = [
-    {
-        id: '1',
-        isNew: true,
-        title: 'Ноутбук Lenovo IdeaPad',
-        description: "Cool laptop..",
-        price: '12 500₴',
-        location: 'Київ',
-        image: 'https://content2.rozetka.com.ua/goods/images/big/465898060.jpg',
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-    },
-    {
-        id: '2',
-        isNew: true,
-        title: 'Велосипед CITY 28"',
-        description: "Nice bike..",
-        price: '3 200₴',
-        location: 'Львів',
-        image: 'https://content1.rozetka.com.ua/goods/images/big/430562622.jpg',
-        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-    },
-    {
-        id: '3',
-        isNew: true,
-        title: 'Смартфон Galaxy A52',
-        description: "",
-        price: '6 800₴',
-        location: 'Одеса',
-        image: 'https://content.rozetka.com.ua/goods/images/big/523604275.jpg',
-        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
-    }
-];
-
+import ListingNotFound from './ListingNotFound';
+import Loading from './Loading';
 
 export default function HomePage() {
-    const [listings, setListings] = React.useState(MOCK_LISTINGS);
-    const [filtered, setFiltered] = React.useState(MOCK_LISTINGS);
+    const [listings, setListings] = useState([]);
+    const [filtered, setFiltered] = useState([]);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        fetchListings();
+    }, []);
 
-    const handleSearch = ({ q, city }) => {
-        const qLow = q.toLowerCase();
-        const cityLow = city.toLowerCase();
-        const results = listings.filter(l =>
-            (!qLow || l.title.toLowerCase().includes(qLow)) &&
-            (!cityLow || l.location.toLowerCase().includes(cityLow))
-        );
-        setFiltered(results);
+    const fetchListings = async (filters = {}) => {
+        try {
+            setLoading(true);
+
+            const queryParams = new URLSearchParams();
+
+            if (filters.searchByTitle) queryParams.append('searchByTitle', filters.searchByTitle);
+            if (filters.searchByCity) queryParams.append('searchByCity', filters.searchByCity);
+            if (filters.categoryIdFilter) queryParams.append('categoryIdFilter', filters.categoryIdFilter);
+            if (filters.minPrice) queryParams.append('minPrice', filters.minPrice);
+            if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice);
+
+            const res = await fetch(`https://localhost:7173/api/Advertisements?${queryParams.toString()}`);
+            if (!res.ok) throw new Error('Server error');
+            const data = await res.json();
+
+            setListings(data);
+            setFiltered(data);
+        } catch (err) {
+            console.error('API error:', err);
+            setListings([]);
+            setFiltered([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
+    const handleSearch = async ({ title = '', city = '' }) => {
+        await fetchListings({ searchByTitle: title, searchByCity: city });
+    };
 
     return (
         <div className="home-container">
             <SearchAndFilters onSearch={handleSearch} />
-            <div className="listing-grid">
-                {filtered.map(item => (<ListingCard key={item.id} item={item} />))}
-            </div>
-            {filtered.length === 0 && <div className="empty">Нічого не знайдено</div>}
+
+            {loading ? (
+                <Loading />
+            ) : (
+                <>
+                    <div className="listing-grid">
+                        {filtered.map(item => (<ListingCard key={item.id} item={item} />))}
+                    </div>
+                    {filtered.length === 0 && <ListingNotFound />}
+                </>
+            )}
         </div>
     );
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import './ListingCard.css';
 
@@ -14,7 +13,7 @@ export default function ListingCard({ item }) {
                 <p className="listing-location">{item.location}</p>
                 <div className="listing-footer">
                     <span className="listing-price">{item.price}</span>
-                    <span className="listing-date">📅 {item.createdAt.toLocaleDateString()}</span>
+                    <span className="listing-date">📅 {new Date(item.createdAt).toLocaleTimeString()}</span>
                 </div>
             </div>
         </Link>

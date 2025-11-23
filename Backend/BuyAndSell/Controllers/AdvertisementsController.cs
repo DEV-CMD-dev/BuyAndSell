@@ -1,8 +1,5 @@
-﻿using BusinessLogic.DTOs;
-using BusinessLogic.DTOs.Advertisements;
+﻿using BusinessLogic.DTOs.Advertisements;
 using BusinessLogic.Interfaces;
-using DataAccess.Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyAndSell.Controllers
@@ -38,11 +35,12 @@ namespace BuyAndSell.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateAdvertisementDTO dto)
+        public async Task<IActionResult> Create([FromForm] CreateAdvertisementDTO dto)
         {
             await advertisementsService.Create(dto);
             return Ok();
         }
+
 
 
 
