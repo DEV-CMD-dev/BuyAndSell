@@ -1,14 +1,22 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import ListingPage from './pages/ListingPage';
+import './index.css';
+import NotFound from './pages/NotFound';
 
-function App() {
-  const [count, setCount] = useState(0)
 
+export default function App() {
   return (
-    <>
-
-    </>
-  )
+    <BrowserRouter>
+      <div className="app-container">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/listings/:id" element={<ListingPage />} />
+          <Route path="*" element={<NotFound />}/>
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
 }
-
-export default App

@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using BusinessLogic.DTOs;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
@@ -14,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 string connStr = builder.Configuration.GetConnectionString("RemoteDb")
     ?? throw new Exception("No Connection String found.");
+
+builder.Services.AddSingleton(new BlobServiceClient(
+    builder.Configuration.GetConnectionString("AzureBlobStorage")));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connStr));
@@ -86,7 +90,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -4,7 +4,6 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using LinqKit;
 
 namespace BusinessLogic.Services
 {
@@ -54,10 +53,13 @@ namespace BusinessLogic.Services
                 Title = ad.Title,
                 Description = ad.Description,
                 Price = ad.Price,
+                City = ad.City,
+                IsNew = ad.IsNew,
                 CreatedAt = ad.CreatedAt,
                 CategoryId = ad.CategoryId,
                 UserId = ad.UserId
             }).ToList();
+
         }
 
 
@@ -74,6 +76,8 @@ namespace BusinessLogic.Services
                                    Title = a.Title,
                                    Description = a.Description,
                                    Price = a.Price,
+                                   City = a.City,
+                                   IsNew = a.IsNew,
                                    CreatedAt = a.CreatedAt,
                                    CategoryId = a.CategoryId,
                                    UserId = a.UserId
@@ -97,6 +101,8 @@ namespace BusinessLogic.Services
                 Title = dto.Title,
                 Description = dto.Description,
                 Price = dto.Price,
+                City = dto.City,
+                IsNew = dto.isNew,
                 CategoryId = dto.CategoryId,
                 CreatedAt = DateTime.UtcNow,
                 UserId = dto.UserId

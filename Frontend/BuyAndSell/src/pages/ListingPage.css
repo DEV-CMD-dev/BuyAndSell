@@ -1,0 +1,32 @@
+.listing-page {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.listing-not-found {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.listing-image {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.listing-details {
+    margin-top: 20px;
+}
+
+.listing-details h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #111;
+    margin-top: 5px;
+}

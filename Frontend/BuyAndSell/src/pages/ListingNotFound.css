@@ -1,0 +1,23 @@
+.listing-not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    background-color: #5983dd;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.listing-not-found h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.listing-not-found p {
+    font-size: 16px;
+    color: #c0b9b9;
+}
