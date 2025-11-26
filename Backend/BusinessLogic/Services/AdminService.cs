@@ -17,7 +17,7 @@ namespace BusinessLogic.Services
         {
             _userManager = userManager;
         }
-        public async Task<bool> Blocking(string id)
+        public async Task<bool> BlockUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
@@ -26,23 +26,22 @@ namespace BusinessLogic.Services
 
             await _userManager.SetLockoutEnabledAsync(user, true);
 
-            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Now.AddYears(10));
 
             return true;
         }
-        public async Task<bool> UnBlocking(string id)
+        public async Task<bool> UnBlockUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
                 return false;
 
-            await _userManager.SetLockoutEnabledAsync(user, false);
-
             await _userManager.SetLockoutEndDateAsync(user, null);
 
             return true;
         }
+
         public async Task<User?> GetProfile(string id)
         {
             return await _userManager.FindByIdAsync(id);

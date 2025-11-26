@@ -18,7 +18,7 @@ namespace WebApi.Controllers
         [HttpPost("block/{id}")]
         public async Task<IActionResult> BlockUser(string id)
         {
-            var result = await _adminService.Blocking(id);
+            var result = await _adminService.BlockUser(id);
 
             if (!result)
                 return NotFound("Користувача не знайдено");
@@ -29,7 +29,7 @@ namespace WebApi.Controllers
         [HttpPost("unblock/{id}")]
         public async Task<IActionResult> UnblockUser(string id)
         {
-            var result = await _adminService.UnBlocking(id);
+            var result = await _adminService.UnBlockUser(id);
 
             if (!result)
                 return NotFound("Користувача не знайдено");
