@@ -4,6 +4,8 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
@@ -18,8 +20,9 @@ namespace BusinessLogic.Services
 
         public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter ,string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
         {
-            var globalMin = await _ctx.Advertisements.MinAsync(x => x.Price);
-            var globalMax = await _ctx.Advertisements.MaxAsync(x => x.Price);
+            var baseQuery = _ctx.Advertisements.Where(x => x.IsConfirmed);
+            var globalMin = await baseQuery.AnyAsync() ? await baseQuery.MinAsync(x => x.Price) : 0;
+            var globalMax = await baseQuery.AnyAsync() ? await baseQuery.MaxAsync(x => x.Price) : 0;
 
             if ((minPrice.HasValue && minPrice.Value > globalMax) ||
                 (maxPrice.HasValue && maxPrice.Value < globalMin) ||
@@ -28,7 +31,7 @@ namespace BusinessLogic.Services
                 return new List<AdvertisementDTO>();
             }
 
-            var query = _ctx.Advertisements.AsQueryable();
+            var query = baseQuery.AsQueryable();
 
             if (categoryIdFilter.HasValue)
                 query = query.Where(x => x.CategoryId == categoryIdFilter.Value);
@@ -58,10 +61,19 @@ namespace BusinessLogic.Services
                 CreatedAt = ad.CreatedAt,
                 CategoryId = ad.CategoryId,
                 UserId = ad.UserId
+                ImageUrl = ad.ImageUrl,
             }).ToList();
 
         }
+        public async Task<List<AdvertisementDTO>> GetPending()
+        {
+            var pending = await _ctx.Advertisements
+                .Where(x => !x.IsConfirmed)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
 
+            return pending.Select(MapToDTO).ToList();
+        }
 
         public async Task<AdvertisementDTO> Get(int? id)
         {
@@ -105,7 +117,9 @@ namespace BusinessLogic.Services
                 IsNew = dto.isNew,
                 CategoryId = dto.CategoryId,
                 CreatedAt = DateTime.UtcNow,
-                UserId = dto.UserId
+                UserId = dto.UserId,
+                IsConfirmed = false,
+                ImageUrl = dto.ImageUrl
             };
 
             _ctx.Advertisements.Add(ad);
@@ -141,5 +155,14 @@ namespace BusinessLogic.Services
             await _ctx.SaveChangesAsync();
         }
 
+        public async Task Confirm(int id)
+        {
+            var ad = await _ctx.Advertisements.FindAsync(id);
+            if (ad == null)
+                throw new KeyNotFoundException("Оголошення не знайдено");
+
+            ad.IsConfirmed = true;
+            await _ctx.SaveChangesAsync();
+        }
     }
 }
