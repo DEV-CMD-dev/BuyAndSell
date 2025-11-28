@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,9 +82,14 @@ builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
-    options.SignIn.RequireConfirmedAccount = false)
-        .AddDefaultTokenProviders()
-        .AddEntityFrameworkStores<AppDbContext>();
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Lockout.AllowedForNewUsers = true;
+})
+.AddDefaultTokenProviders()
+.AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
