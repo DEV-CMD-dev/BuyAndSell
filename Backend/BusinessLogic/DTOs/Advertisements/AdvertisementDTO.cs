@@ -9,6 +9,7 @@
         public decimal Price { get; set; }
         public bool? IsNew { get; set; }
         public string? City { get; set; }
+        public string CategoryName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int? CategoryId { get; set; }

@@ -30,6 +30,7 @@ builder.Services.Configure<JwtOptions>(
 
 
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 builder.Services.AddSingleton(_ => builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>()!);
 

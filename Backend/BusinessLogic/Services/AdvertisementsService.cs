@@ -3,6 +3,7 @@ using BusinessLogic.DTOs.Advertisements;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
@@ -10,10 +11,12 @@ namespace BusinessLogic.Services
     public class AdvertisementsService: IAdvertisementsService
     {
         private readonly AppDbContext _ctx;
+        private readonly IBlobStorageService _blobStorageService;
 
-        public AdvertisementsService(AppDbContext ctx)
+        public AdvertisementsService(AppDbContext ctx, IBlobStorageService blobStorageService)
         {
             _ctx = ctx;
+            _blobStorageService = blobStorageService;
         }
 
         public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter ,string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
@@ -57,6 +60,7 @@ namespace BusinessLogic.Services
                 IsNew = ad.IsNew,
                 CreatedAt = ad.CreatedAt,
                 CategoryId = ad.CategoryId,
+                ImageUrl = ad.ImageUrl,
                 UserId = ad.UserId
             }).ToList();
 
@@ -80,6 +84,8 @@ namespace BusinessLogic.Services
                                    IsNew = a.IsNew,
                                    CreatedAt = a.CreatedAt,
                                    CategoryId = a.CategoryId,
+                                   CategoryName = a.Category.Name,
+                                   ImageUrl = a.ImageUrl,
                                    UserId = a.UserId
                                })
                                .FirstOrDefaultAsync();
@@ -96,6 +102,8 @@ namespace BusinessLogic.Services
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
 
+            var imageUrl = await HandleImageUpload(dto.Image);
+
             var ad = new Advertisement
             {
                 Title = dto.Title,
@@ -105,7 +113,8 @@ namespace BusinessLogic.Services
                 IsNew = dto.isNew,
                 CategoryId = dto.CategoryId,
                 CreatedAt = DateTime.UtcNow,
-                UserId = dto.UserId
+                UserId = dto.UserId,
+                ImageUrl = imageUrl
             };
 
             _ctx.Advertisements.Add(ad);
@@ -141,5 +150,18 @@ namespace BusinessLogic.Services
             await _ctx.SaveChangesAsync();
         }
 
+        private async Task<string?> HandleImageUpload(IFormFile? image)
+        {
+            if (image == null)
+                return null;
+
+            using var stream = image.OpenReadStream();
+
+            return await _blobStorageService.UploadAsync(
+                stream,
+                $"{Guid.NewGuid()}-{image.FileName}",
+                "advertisements"
+            );
+        }
     }
 }
