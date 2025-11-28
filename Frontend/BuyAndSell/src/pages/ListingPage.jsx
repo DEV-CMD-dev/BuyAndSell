@@ -22,15 +22,16 @@ export default function ListingPage() {
         );
     }
 
-
     return (
         <div className="listing-page">
-            <img src={listing.image} alt={listing.title} className="listing-image" />
+            <img src={listing.imageUrl} alt={listing.title} className="listing-image" />
             <div className="listing-details">
                 <h1>{listing.title}</h1>
                 <p>{listing.location}</p>
-                <p className="price">{listing.price}</p>
+                <p className="price">{listing.price}₴</p>
                 <p>{listing.description}</p>
+                <p>Категорія: {listing.categoryName}</p>
+
                 <p>Стан: {listing.isNew ? "Новий" : "Б/В"}</p>
             </div>
         </div>
