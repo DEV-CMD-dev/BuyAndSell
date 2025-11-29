@@ -13,7 +13,5 @@ namespace BusinessLogic.Interfaces
         Task Create(CreateAdvertisementDTO dto);
         Task Edit(int id, EditAdvertisementDTO dto);
         Task Delete(int? id);
-        Task Confirm(int id);
-        Task<List<AdvertisementDTO>> GetPending();
     }
 }

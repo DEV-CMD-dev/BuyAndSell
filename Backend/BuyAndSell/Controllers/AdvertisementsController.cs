@@ -60,19 +60,6 @@ namespace BuyAndSell.Controllers
             return NoContent();
         }
 
-        [HttpGet("pending")]
-        public async Task<IActionResult> GetPending()
-        {
-            var ads = await advertisementsService.GetPending();
-            return Ok(ads);
-        }
-
-        [HttpPost("confirm/{id}")]
-        public async Task<IActionResult> Confirm(int id)
-        {
-            await advertisementsService.Confirm(id);
-            return Ok();
-        }
-
+ 
     }
 }

@@ -25,6 +25,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddScoped<IAdvertisementsService, AdvertisementsService>();
 
+builder.Services.AddScoped<IModerationService, ModerationService>();
+
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("JwtOptions"));
 

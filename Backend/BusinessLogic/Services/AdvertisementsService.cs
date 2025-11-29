@@ -65,15 +65,7 @@ namespace BusinessLogic.Services
             }).ToList();
 
         }
-        public async Task<List<AdvertisementDTO>> GetPending()
-        {
-            var pending = await _ctx.Advertisements
-                .Where(x => !x.IsConfirmed)
-                .OrderByDescending(x => x.CreatedAt)
-                .ToListAsync();
-
-            return pending.Select(MapToDTO).ToList();
-        }
+        
 
         public async Task<AdvertisementDTO> Get(int? id)
         {
@@ -155,14 +147,6 @@ namespace BusinessLogic.Services
             await _ctx.SaveChangesAsync();
         }
 
-        public async Task Confirm(int id)
-        {
-            var ad = await _ctx.Advertisements.FindAsync(id);
-            if (ad == null)
-                throw new KeyNotFoundException("Оголошення не знайдено");
 
-            ad.IsConfirmed = true;
-            await _ctx.SaveChangesAsync();
-        }
     }
 }
