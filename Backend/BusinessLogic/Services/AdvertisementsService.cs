@@ -23,7 +23,7 @@ namespace BusinessLogic.Services
             _blobStorageService = blobStorageService;
         }
 
-        public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter ,string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
+        public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter, string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
         {
             var baseQuery = _ctx.Advertisements.Where(x => x.Status == (int)AdvertisementStatus.Confirmed);
             var globalMin = await baseQuery.AnyAsync() ? await baseQuery.MinAsync(x => x.Price) : 0;
