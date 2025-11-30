@@ -20,7 +20,7 @@ namespace BusinessLogic.Services
 
         public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter ,string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
         {
-            var baseQuery = _ctx.Advertisements.Where(x => x.IsConfirmed);
+            var baseQuery = _ctx.Advertisements.Where(x => x.Status == (int)AdvertisementStatus.Confirmed);
             var globalMin = await baseQuery.AnyAsync() ? await baseQuery.MinAsync(x => x.Price) : 0;
             var globalMax = await baseQuery.AnyAsync() ? await baseQuery.MaxAsync(x => x.Price) : 0;
 
@@ -48,9 +48,7 @@ namespace BusinessLogic.Services
             if (maxPrice.HasValue)
                 query = query.Where(x => x.Price <= maxPrice.Value);
 
-            var filtered = await query.ToListAsync();
-
-            return filtered.Select(ad => new AdvertisementDTO
+            var filtered = await query.Select(ad => new AdvertisementDTO
             {
                 Id = ad.Id,
                 Title = ad.Title,
@@ -60,9 +58,12 @@ namespace BusinessLogic.Services
                 IsNew = ad.IsNew,
                 CreatedAt = ad.CreatedAt,
                 CategoryId = ad.CategoryId,
-                UserId = ad.UserId
+                UserId = ad.UserId,
                 ImageUrl = ad.ImageUrl,
-            }).ToList();
+                Status = (AdvertisementStatus)ad.Status
+            }).ToListAsync();
+
+            return filtered;
 
         }
         
@@ -85,6 +86,7 @@ namespace BusinessLogic.Services
                                    CreatedAt = a.CreatedAt,
                                    CategoryId = a.CategoryId,
                                    UserId = a.UserId
+                                   Status = (AdvertisementStatus)a.Status
                                })
                                .FirstOrDefaultAsync();
 
