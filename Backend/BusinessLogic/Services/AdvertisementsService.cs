@@ -3,19 +3,24 @@ using BusinessLogic.DTOs.Advertisements;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
-    public class AdvertisementsService: IAdvertisementsService
+    public class AdvertisementsService : IAdvertisementsService
     {
         private readonly AppDbContext _ctx;
+        private readonly IBlobStorageService _blobStorageService;
 
-        public AdvertisementsService(AppDbContext ctx)
+        public AdvertisementsService(AppDbContext ctx, IBlobStorageService blobStorageService)
         {
             _ctx = ctx;
+            _blobStorageService = blobStorageService;
         }
 
         public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter ,string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
@@ -64,9 +69,7 @@ namespace BusinessLogic.Services
             }).ToListAsync();
 
             return filtered;
-
         }
-        
 
         public async Task<AdvertisementDTO> Get(int? id)
         {
@@ -85,7 +88,8 @@ namespace BusinessLogic.Services
                                    IsNew = a.IsNew,
                                    CreatedAt = a.CreatedAt,
                                    CategoryId = a.CategoryId,
-                                   UserId = a.UserId
+                                   ImageUrl = a.ImageUrl,
+                                   UserId = a.UserId,
                                    Status = (AdvertisementStatus)a.Status
                                })
                                .FirstOrDefaultAsync();
@@ -102,6 +106,8 @@ namespace BusinessLogic.Services
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto));
 
+            var imageUrl = await HandleImageUpload(dto.Image);
+
             var ad = new Advertisement
             {
                 Title = dto.Title,
@@ -112,8 +118,8 @@ namespace BusinessLogic.Services
                 CategoryId = dto.CategoryId,
                 CreatedAt = DateTime.UtcNow,
                 UserId = dto.UserId,
-                IsConfirmed = false,
-                ImageUrl = dto.ImageUrl
+                ImageUrl = imageUrl,
+                Status = (int)AdvertisementStatus.Pending
             };
 
             _ctx.Advertisements.Add(ad);
@@ -149,6 +155,18 @@ namespace BusinessLogic.Services
             await _ctx.SaveChangesAsync();
         }
 
+        private async Task<string?> HandleImageUpload(IFormFile? image)
+        {
+            if (image == null)
+                return null;
 
+            using var stream = image.OpenReadStream();
+
+            return await _blobStorageService.UploadAsync(
+                stream,
+                $"{Guid.NewGuid()}-{image.FileName}",
+                "advertisements"
+            );
+        }
     }
 }
