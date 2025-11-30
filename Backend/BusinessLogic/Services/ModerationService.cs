@@ -5,6 +5,7 @@ using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
@@ -20,24 +21,26 @@ namespace BusinessLogic.Services
 
         public async Task<List<AdvertisementDTO>> GetPending()
         {
-            var pending = await _ctx.Advertisements
-                .Where(x => !x.IsConfirmed)
+            return await _ctx.Advertisements
+                .AsNoTracking()
+                .Where(x => x.Status == (int)AdvertisementStatus.Pending)
                 .OrderByDescending(x => x.CreatedAt)
-                .ToListAsync();
+                .Select(ad => new AdvertisementDTO
+                {
+                    Id = ad.Id,
+                    Title = ad.Title,
+                    Description = ad.Description,
+                    Price = ad.Price,
+                    City = ad.City,
+                    IsNew = ad.IsNew,
+                    ImageUrl = ad.ImageUrl,
+                    CreatedAt = ad.CreatedAt,
+                    CategoryId = ad.CategoryId,
+                    UserId = ad.UserId,
 
-            return pending.Select(ad => new AdvertisementDTO
-            {
-                Id = ad.Id,
-                Title = ad.Title,
-                Description = ad.Description,
-                Price = ad.Price,
-                City = ad.City,
-                IsNew = ad.IsNew,
-                ImageUrl = ad.ImageUrl,
-                CreatedAt = ad.CreatedAt,
-                CategoryId = ad.CategoryId,
-                UserId = ad.UserId
-            }).ToList();
+                    Status = (AdvertisementStatus)ad.Status
+                })
+                .ToListAsync();
         }
 
         public async Task Confirm(int id)
@@ -45,7 +48,7 @@ namespace BusinessLogic.Services
             var ad = await _ctx.Advertisements.FindAsync(id);
             if (ad == null) return;
 
-            ad.IsConfirmed = true;
+            ad.Status = (int)AdvertisementStatus.Confirmed;
             await _ctx.SaveChangesAsync();
         }
 
@@ -54,7 +57,7 @@ namespace BusinessLogic.Services
             var ad = await _ctx.Advertisements.FindAsync(id);
             if (ad == null) return;
 
-            _ctx.Advertisements.Remove(ad);
+            ad.Status = (int)AdvertisementStatus.Rejected;
             await _ctx.SaveChangesAsync();
         }
     }

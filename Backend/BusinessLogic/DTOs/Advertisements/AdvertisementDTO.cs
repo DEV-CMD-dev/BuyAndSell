@@ -1,4 +1,5 @@
-﻿namespace BusinessLogic.DTOs
+﻿using BusinessLogic.DTOs.Advertisements;
+namespace BusinessLogic.DTOs
 {
     public class AdvertisementDTO
     {
@@ -14,5 +15,6 @@
         public int? CategoryId { get; set; }
 
         public string? UserId { get; set; }
+        public AdvertisementStatus Status { get; set; }
     }
 }
