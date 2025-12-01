@@ -19,10 +19,12 @@ namespace BuyAndSell.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAll() =>
             Ok(await _service.GetAllAsync());
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult<CategoryDto>> GetById(int id)
         {
             var category = await _service.GetByIdAsync(id);
@@ -30,6 +32,7 @@ namespace BuyAndSell.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult<CategoryDto>> Create(CategoryCreateDto category)
         {
             if (!ModelState.IsValid)
@@ -40,6 +43,7 @@ namespace BuyAndSell.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Update(int id, CategoryUpdateDto category)
         {
             if (!ModelState.IsValid)
@@ -49,6 +53,7 @@ namespace BuyAndSell.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Delete(int id) =>
             await _service.DeleteAsync(id) ? NoContent() : NotFound();
     }

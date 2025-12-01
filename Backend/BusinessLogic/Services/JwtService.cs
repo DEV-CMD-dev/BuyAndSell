@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BusinessLogic.Services
+namespace BusinessLogic.Services    
 {
     public class JwtService : IJwtService
     {
@@ -34,7 +34,7 @@ namespace BusinessLogic.Services
             };
 
             var roles = await userManager.GetRolesAsync(user);
-            claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             return claims;
         }

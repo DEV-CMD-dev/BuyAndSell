@@ -49,11 +49,18 @@ namespace BusinessLogic.Services
             if (!result.Succeeded)
                 throw new Exception("Invalid login attempt");
 
+            var claims = await jwtService.GetClaimsAsync(user);
+
+            var token = await jwtService.GenerateTokenAsync(claims);
+
+            var roles = await userManager.GetRolesAsync(user);
+
             return new LoginResponse
             {
-                AccessToken = await jwtService.GenerateTokenAsync(await jwtService.GetClaimsAsync(user))
+                AccessToken = token,                
             };
         }
+
 
 
         public async Task Logout()

@@ -3,12 +3,15 @@ using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using DataAccess.Data.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +45,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtOpts.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpts.Key)),
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
+            RoleClaimType = ClaimTypes.Role
         };
     });
 
@@ -78,6 +82,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false)
+        .AddRoles<IdentityRole>()
         .AddDefaultTokenProviders()
         .AddEntityFrameworkStores<AppDbContext>();
 
@@ -97,6 +102,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await RoleSeeder.SeedAsync(roleManager);
+}
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
