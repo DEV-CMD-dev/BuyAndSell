@@ -25,7 +25,7 @@ namespace BusinessLogic.Services
 
         public async Task<List<AdvertisementDTO>> GetAll(int? categoryIdFilter, string? searchByTitle, string? searchByCity, decimal? minPrice, decimal? maxPrice)
         {
-            var baseQuery = _ctx.Advertisements.Where(x => x.Status == (int)AdvertisementStatus.Confirmed);
+            var baseQuery = _ctx.Advertisements.Where(x => x.Status == AdvertisementStatus.Confirmed);
             var globalMin = await baseQuery.AnyAsync() ? await baseQuery.MinAsync(x => x.Price) : 0;
             var globalMax = await baseQuery.AnyAsync() ? await baseQuery.MaxAsync(x => x.Price) : 0;
 
@@ -65,7 +65,7 @@ namespace BusinessLogic.Services
                 CategoryId = ad.CategoryId,
                 UserId = ad.UserId,
                 ImageUrl = ad.ImageUrl,
-                Status = (AdvertisementStatus)ad.Status
+                Status = ad.Status
             }).ToListAsync();
 
             return filtered;
@@ -119,7 +119,7 @@ namespace BusinessLogic.Services
                 CreatedAt = DateTime.UtcNow,
                 UserId = dto.UserId,
                 ImageUrl = imageUrl,
-                Status = (int)AdvertisementStatus.Pending
+                Status = a.Status
             };
 
             _ctx.Advertisements.Add(ad);

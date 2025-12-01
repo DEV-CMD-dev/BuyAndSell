@@ -13,6 +13,10 @@ namespace DataAccess.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Advertisement>()
+                .Property(x => x.Status)
+                .HasConversion<string>();
         }
     }
 }

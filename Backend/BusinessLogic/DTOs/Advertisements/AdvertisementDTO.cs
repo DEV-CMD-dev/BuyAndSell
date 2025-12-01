@@ -1,4 +1,4 @@
-﻿using BusinessLogic.DTOs.Advertisements;
+﻿using DataAccess.Data.Entities;
 namespace BusinessLogic.DTOs
 {
     public class AdvertisementDTO

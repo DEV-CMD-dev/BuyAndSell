@@ -17,6 +17,6 @@
         public string? UserId { get; set; }
         public User? User { get; set; }
 
-        public int Status { get; set; } = 0;
+        public AdvertisementStatus Status { get; set; } = AdvertisementStatus.Pending;
     }
 }

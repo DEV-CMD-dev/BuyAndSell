@@ -4,6 +4,7 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace BusinessLogic.Services
         {
             return await _ctx.Advertisements
                 .AsNoTracking()
-                .Where(x => x.Status == (int)AdvertisementStatus.Pending)
+                .Where(x => x.Status == AdvertisementStatus.Pending)
                 .OrderByDescending(x => x.CreatedAt)
                 .Select(ad => new AdvertisementDTO
                 {
@@ -38,7 +39,7 @@ namespace BusinessLogic.Services
                     CategoryId = ad.CategoryId,
                     UserId = ad.UserId,
 
-                    Status = (AdvertisementStatus)ad.Status
+                    Status = ad.Status
                 })
                 .ToListAsync();
         }
@@ -46,18 +47,32 @@ namespace BusinessLogic.Services
         public async Task Confirm(int id)
         {
             var ad = await _ctx.Advertisements.FindAsync(id);
-            if (ad == null) return;
 
-            ad.Status = (int)AdvertisementStatus.Confirmed;
+            if (ad == null)
+                throw new KeyNotFoundException($"Оголошення з ID {id} не знайдено.");
+            if (ad.Status == AdvertisementStatus.Rejected)
+            {
+                throw new InvalidOperationException("Неможливо підтвердити відхилене оголошення.");
+            }
+            if (ad.Status == AdvertisementStatus.Confirmed)
+            {
+                return;
+            }
+            ad.Status = AdvertisementStatus.Confirmed;
             await _ctx.SaveChangesAsync();
         }
 
         public async Task Reject(int id)
         {
             var ad = await _ctx.Advertisements.FindAsync(id);
-            if (ad == null) return;
 
-            ad.Status = (int)AdvertisementStatus.Rejected;
+            if (ad == null)
+                throw new KeyNotFoundException($"Оголошення з ID {id} не знайдено.");
+            if (ad.Status == AdvertisementStatus.Rejected)
+            {
+                return;
+            }
+            ad.Status = AdvertisementStatus.Rejected;
             await _ctx.SaveChangesAsync();
         }
     }
